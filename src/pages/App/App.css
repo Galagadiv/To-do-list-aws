@@ -1,0 +1,19 @@
+.navContainer {
+}
+.navTitle {
+  font-weight: 700;
+}
+.card {
+  display: flex;
+  justify-content: center;
+  padding: 2em;
+}
+.listOfNavLinks {
+  display: flex;
+  gap: 10px;
+}
+.itemOfNavLinks {
+}
+.links {
+  font-size: 26px;
+}
