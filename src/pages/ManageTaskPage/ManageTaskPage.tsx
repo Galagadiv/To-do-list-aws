@@ -1,55 +1,51 @@
-import React, {useState} from "react";
-import {Link} from "react-router";
+import {useState} from "react";
+import "../../global-styles/index.css";
 import "./ManageTaskPage.css";
-import AddIcon from "@mui/icons-material/Add";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
+import Header from "../../components/Header/Header";
 
 type Props = {};
 
 export default function ManageTaskPage({}: Props) {
   const [done, setDone] = useState<boolean>(false);
 
-  const handleTaskDone = () => {
+  const handleSubmit = async () => {
     setDone((prev) => !prev);
   };
 
   return (
-    <main className="pageManageTaskWrapper">
-      <div>
-        <Link to="/login" className="links">
-          Вийти
-        </Link>
-        <h1 className="pageTitle">Створіть завдання</h1>
-        <Link to="/login" className="links">
-          Вийти
-        </Link>
-      </div>
-      <div className="task">
-        <div className="task-info-bar">
-          <h2 className="task-title">Title:</h2>
-          <input placeholder="Введіть заголовок ..."> </input>
-        </div>
-        <div className="task-control-btn-bar">
-          <button
-            className={`control-btn done-query ${!done ? "undone" : "done"}`}
-            onClick={handleTaskDone}
-          >
-            {!done ? (
-              <DoneOutlinedIcon className="icon" />
-            ) : (
-              <DoneAllOutlinedIcon className="icon" />
-            )}
-          </button>
-        </div>
-      </div>
-      <div>
-        <Link to="/new-task" className="addButton">
-          <AddIcon className="icon" />
-        </Link>
-      </div>
-    </main>
+    <>
+      <Header title="Нове завдання" />
+      <main className="pageWrapper">
+        <form className="form-crete-task" onSubmit={handleSubmit}>
+          <div className="title-create-box">
+            <h2 className="sectionTitle">Назва:</h2>
+            <input
+              placeholder="Введіть заголовок..."
+              className="input-title"
+              required
+            />
+            <button
+              className={`control-btn done-query ${!done ? "undone" : "done"}`}
+              type="submit"
+            >
+              {!done ? (
+                <DoneOutlinedIcon className="icon" />
+              ) : (
+                <DoneAllOutlinedIcon className="icon" />
+              )}
+            </button>
+          </div>
+          <div className="decription-create-box">
+            <h2 className="sectionTitle">Опис:</h2>
+            <textarea
+              placeholder="Введіть опис..."
+              className="textarea-decription"
+            />
+          </div>
+        </form>
+      </main>
+    </>
   );
 }

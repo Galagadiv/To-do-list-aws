@@ -27,10 +27,18 @@ body {
   min-height: 100vh;
 }
 
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
@@ -69,4 +77,101 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.links {
+  font-size: 26px;
+}
+
+.pageTitle {
+  font-weight: 700;
+}
+
+.control-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 65px;
+  max-height: 50px;
+  outline: 0;
+  transition: border cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s;
+}
+
+.control-btn.edit {
+  &:hover,
+  &:focus,
+  &:active {
+    border: 1px solid #f88539;
+    outline: none;
+  }
+}
+
+.control-btn.del {
+  &:hover,
+  &:focus,
+  &:active {
+    border: 1px solid #f83939;
+    outline: none;
+  }
+}
+
+.control-btn.done-query {
+  max-width: 50px;
+  max-height: 50px;
+  outline: none;
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: border 0.4s ease, background-color 0.4s ease;
+
+  &:hover {
+    border: 1px solid #2b8101;
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+    border: 1px solid #2b8101;
+  }
+
+  &.done {
+    background-color: #2b8101;
+    border: 1px solid #2b8101;
+  }
+
+  &.undone {
+    background-color: transparent;
+    border: 1px solid transparent;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border: 1px solid #2b8101;
+      background-color: rgba(43, 129, 1, 0.05);
+    }
+  }
+}
+
+.control-btn.done-query.done {
+  background-color: #2b8101;
+  border: 1px solid #2b8101;
+}
+
+.control-btn.done-query.undone {
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.icon {
+  color: #fff;
+  font-size: 2.7em;
+  padding: 0;
+}
+
+.icon.edit {
+  color: #f88539;
+}
+
+.icon.del {
+  color: #f83939;
 }
