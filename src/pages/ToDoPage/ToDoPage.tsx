@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useEffect, useState} from "react";
 import "../../global-styles/index.css";
 import "./ToDoPage.css";
 import {Link} from "react-router";
@@ -17,6 +17,8 @@ export default function ToDoPage({}: Props) {
   const handleTaskDone = () => {
     setDone((prev) => !prev);
   };
+
+  useEffect(() => {}, []);
 
   return (
     <>

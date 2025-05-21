@@ -20,7 +20,9 @@ export default function ManageTaskPage({}: Props) {
       <main className="pageWrapper">
         <form className="form-crete-task" onSubmit={handleSubmit}>
           <div className="title-create-box">
-            <h2 className="sectionTitle">Назва:</h2>
+            <div className="sectionTitle">
+              <h2>Назва:</h2>
+            </div>
             <input
               placeholder="Введіть заголовок..."
               className="input-title"
@@ -38,7 +40,9 @@ export default function ManageTaskPage({}: Props) {
             </button>
           </div>
           <div className="decription-create-box">
-            <h2 className="sectionTitle">Опис:</h2>
+            <div className="sectionTitle">
+              <h2>Опис:</h2>
+            </div>
             <textarea
               placeholder="Введіть опис..."
               className="textarea-decription"
