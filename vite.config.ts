@@ -6,4 +6,7 @@ const repoName = "To-do-list-aws";
 export default defineConfig({
   plugins: [react()],
   base: `/${repoName}/`,
+  build: {
+    outDir: "docs",
+  },
 });
