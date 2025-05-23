@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter basename={basename}>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="*" element={<App />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegPage />} />
         <Route path="/task-list" element={<ToDoPage />} />
