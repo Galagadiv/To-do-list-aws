@@ -2,14 +2,15 @@ import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
 import "./global-styles/reset.css";
 import "./global-styles/index.css";
-import {BrowserRouter, Routes, Route} from "react-router";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import App from "./pages/App/App.tsx";
 import LoginPage from "./pages/LoginPage/LoginPage.tsx";
 import RegPage from "./pages/RegPage/RegPage.tsx";
 import ToDoPage from "./pages/ToDoPage/ToDoPage.tsx";
 import ManageTaskPage from "./pages/ManageTaskPage/ManageTaskPage.tsx";
 
-const basename = !import.meta.env.DEV ? "/" : "/To-do-list-aws";
+// const basename = !import.meta.env.DEV ? "/" : "/To-do-list-aws";
+const basename = "/To-do-list-aws";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
