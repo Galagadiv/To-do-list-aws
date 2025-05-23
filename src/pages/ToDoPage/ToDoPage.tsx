@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import "../../global-styles/index.css";
 import "./ToDoPage.css";
-import {Link} from "react-router";
+import {Link, useSearchParams} from "react-router";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -14,9 +14,18 @@ type Props = {};
 export default function ToDoPage({}: Props) {
   const [done, setDone] = useState<boolean>(false);
 
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+  // const state = searchParams.get("state");
+
   const handleTaskDone = () => {
     setDone((prev) => !prev);
   };
+
+  useEffect(() => {
+    console.log("Code:", code);
+    // зроби запит до backend /Callback тут або передай далі
+  }, [code]);
 
   useEffect(() => {}, []);
 
