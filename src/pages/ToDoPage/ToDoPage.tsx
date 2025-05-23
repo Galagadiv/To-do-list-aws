@@ -27,7 +27,17 @@ export default function ToDoPage({}: Props) {
     // зроби запит до backend /Callback тут або передай далі
   }, [code]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("access_token="));
+    const accessToken = cookie?.split("=")[1];
+
+    if (accessToken) {
+      // Виклик до API з accessToken
+      console.log("Token from cookie:", accessToken);
+    }
+  }, []);
 
   return (
     <>
