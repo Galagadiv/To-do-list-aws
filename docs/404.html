@@ -1,11 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
   <head>
-    <meta http-equiv="refresh" content="0; url=./To-do-list-aws/" />
+    <meta charset="UTF-8" />
+    <title>404 Помилка</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #121212;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        background-color: #646cff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #5159f8;
+      }
+    </style>
   </head>
   <body>
     <main>
-      <h1>404 Помилка!</h1>
+      <h1>404 – Сторінку не знайдено</h1>
+      <button onclick="window.location.href='./'">
+        Повернутись на головну
+      </button>
     </main>
   </body>
 </html>
