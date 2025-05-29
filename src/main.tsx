@@ -9,12 +9,9 @@ import RegPage from "./pages/RegPage/RegPage.tsx";
 import ToDoPage from "./pages/ToDoPage/ToDoPage.tsx";
 import ManageTaskPage from "./pages/ManageTaskPage/ManageTaskPage.tsx";
 
-// const basename = !import.meta.env.DEV ? "/" : "/To-do-list-aws";
-const basename = "/To-do-list-aws";
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter basename={basename}>
+    <BrowserRouter>
       <Routes>
         <Route path="*" element={<App />} />
         <Route path="/login" element={<LoginPage />} />

@@ -1,11 +1,11 @@
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 
-const repoName = "To-do-list-aws";
+// const repoName = "To-do-list-aws";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: `/${repoName}/`,
+  base: ``,
   build: {
     outDir: "docs",
   },
