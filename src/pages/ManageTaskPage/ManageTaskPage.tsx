@@ -63,7 +63,7 @@ export default function ManageTaskPage({}: Props) {
     <>
       <Header title="Нове завдання" />
       <main className="pageWrapper">
-        <form className="form-create-task" onSubmit={handleSubmit}>
+        <form className="form-crete-task" onSubmit={handleSubmit}>
           <div className="title-create-box">
             <div className="sectionTitle">
               <h2>Назва:</h2>
@@ -75,12 +75,11 @@ export default function ManageTaskPage({}: Props) {
               className="input-title"
               required
             />
-            <button className="control-btn done-query" type="submit">
+            <button className={`control-btn done-query`} type="submit">
               <DoneOutlinedIcon className="icon" />
             </button>
           </div>
-
-          <div className="description-create-box">
+          <div className="decription-create-box">
             <div className="sectionTitle">
               <h2>Опис:</h2>
             </div>
@@ -88,7 +87,7 @@ export default function ManageTaskPage({}: Props) {
               value={taskDescr}
               onChange={(e) => setTaskDescr(e.target.value)}
               placeholder="Введіть опис..."
-              className="textarea-description"
+              className="textarea-decription"
             />
           </div>
         </form>
