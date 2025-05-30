@@ -26,51 +26,9 @@ export default function ToDoPage({}: Props) {
 
   const [isLoading] = useState<boolean>(false);
 
-  // const handleTaskDone = () => {
-  //   setDone((prev) => !prev);
-  // };
-
-  // useEffect(() => {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (!accessToken) return;
-
-  //   const fetchTasks = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await fetch(
-  //         "https://o35hv6iua4.execute-api.us-east-1.amazonaws.com/Firebase-Test-4/GetTasks?completed=false",
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             Authorization: `Bearer ${accessToken}`,
-  //           },
-  //         }
-  //       );
-
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch tasks");
-  //       }
-
-  //       const data = await response.json();
-  //       setTasks(data.tasks); // Відповідно до тіла Lambda
-  //     } catch (err: any) {
-  //       alert("Невдалось знайти ваші завдання: " + err.message);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchTasks();
-  // }, []);
-
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get("accessToken");
-    console.log(tokenFromUrl);
-    if (tokenFromUrl) {
-      localStorage.setItem("accessToken", tokenFromUrl);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    const token = localStorage.getItem("accessToken");
+    console.log(token);
   }, []);
 
   return (
