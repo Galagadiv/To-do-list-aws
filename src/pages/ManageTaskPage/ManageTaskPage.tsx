@@ -35,21 +35,20 @@ export default function ManageTaskPage({}: Props) {
     }
 
     try {
-      const response = await fetch(
-        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/addTask",
+      const res = await fetch(
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/tasks",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify(payload),
         }
       );
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Не вдалося додати завдання");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Не вдалося створити завдання");
       }
 
       alert("Завдання створено успішно!");
