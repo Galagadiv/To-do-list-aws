@@ -21,7 +21,6 @@ type Task = {
 };
 
 export default function ToDoPage({}: Props) {
-  // const [done, setDone] = useState<boolean>(false);
   const [tasks] = useState<Task[]>([]);
 
   const [isLoading] = useState<boolean>(false);
