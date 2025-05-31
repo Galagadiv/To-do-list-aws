@@ -16,18 +16,52 @@ type Task = {
   taskId: string;
   completed: boolean;
   createdAt: string;
-  description: string;
+  description?: string;
   title: string;
 };
 
 export default function ToDoPage({}: Props) {
-  const [tasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const [isLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log(token);
+    const fetchTasks = async () => {
+      setIsLoading(true);
+      try {
+        const userId = localStorage.getItem("accessToken");
+        if (!userId) {
+          throw new Error("User ID не знайдено");
+        }
+
+        const url = new URL(
+          "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTask"
+        );
+        url.searchParams.append("userId", userId);
+
+        const res = await fetch(url.toString(), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || "Не вдалося отримати завдання");
+        }
+
+        const data: Task[] = await res.json();
+        setTasks(data);
+      } catch (err: any) {
+        console.error("Fetch error:", err.message || err);
+        alert("Виникла помилка при отриманні завдань: " + (err.message || err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTasks();
   }, []);
 
   return (

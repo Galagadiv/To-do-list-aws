@@ -36,7 +36,7 @@ export default function ManageTaskPage({}: Props) {
 
     try {
       const res = await fetch(
-        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/CRUD",
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/addTask",
         {
           method: "POST",
           headers: {
