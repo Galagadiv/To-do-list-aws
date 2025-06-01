@@ -24,6 +24,7 @@ export default function ToDoPage({}: Props) {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [modalState, setModalState] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -63,6 +64,37 @@ export default function ToDoPage({}: Props) {
 
     fetchTasks();
   }, []);
+
+  // const openModal = () => {setModalState(true)}
+  // const closeModal = () => {setModalState(false)}
+
+  const handleDelete = async (taskTitle: string, taskId: string) => {
+    if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) === true) {
+      const url = new URL(
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
+      );
+
+      const userId = localStorage.getItem("accessToken");
+      if (!userId) {
+        throw new Error("User ID не знайдено");
+      }
+
+      url.searchParams.append("userId", userId);
+      url.searchParams.append("taskId", taskId);
+
+      const res = await fetch(url.toString(), {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Не вдалося видалити завдання");
+      }
+    }
+  };
 
   return (
     <>
@@ -111,7 +143,10 @@ export default function ToDoPage({}: Props) {
                     <EditOutlinedIcon className="icon edit" />
                   </button>
                   <button className="control-btn del">
-                    <DeleteOutlinedIcon className="icon del" />
+                    <DeleteOutlinedIcon
+                      className="icon del"
+                      onClick={() => handleDelete(task.title, task.taskId)}
+                    />
                   </button>
                 </div>
               </li>
