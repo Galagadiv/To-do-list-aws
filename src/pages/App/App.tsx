@@ -8,9 +8,9 @@ function App() {
   useEffect(() => {
     // Перевіряємо, чи є токен у hash-фрагменті URL
     const hash = window.location.hash;
-    if (hash.includes("access_token")) {
+    if (hash.includes("sub")) {
       const params = new URLSearchParams(hash.substring(1));
-      const token = params.get("access_token");
+      const token = params.get("sub");
       if (token) {
         // Зберігаємо токен у localStorage
         localStorage.setItem("accessToken", token);
