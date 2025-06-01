@@ -26,44 +26,47 @@ export default function ToDoPage({}: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [modalState, setModalState] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      setIsLoading(true);
-      try {
-        const userId = localStorage.getItem("accessToken");
-        if (!userId) {
-          throw new Error("User ID не знайдено");
-        }
+  const [statusFilter, setStatusFilter] = useState<boolean>(false);
 
-        const url = new URL(
-          "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTasks"
-        );
-        url.searchParams.append("userId", userId);
-
-        const res = await fetch(url.toString(), {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData.error || "Не вдалося отримати завдання");
-        }
-
-        const data: Task[] = await res.json();
-        setTasks(data);
-      } catch (err: any) {
-        console.error("Fetch error:", err.message || err);
-        alert("Виникла помилка при отриманні завдань: " + (err.message || err));
-      } finally {
-        setIsLoading(false);
+  const fetchTasks = async () => {
+    setIsLoading(true);
+    try {
+      const userId = localStorage.getItem("accessToken");
+      if (!userId) {
+        throw new Error("User ID не знайдено");
       }
-    };
 
+      const url = new URL(
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTasks"
+      );
+      url.searchParams.append("userId", userId);
+      url.searchParams.append("completed", statusFilter.toString());
+
+      const res = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Не вдалося отримати завдання");
+      }
+
+      const data: Task[] = await res.json();
+      setTasks(data);
+    } catch (err: any) {
+      console.error("Fetch error:", err.message || err);
+      alert("Виникла помилка при отриманні завдань: " + (err.message || err));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [statusFilter]);
 
   // const openModal = () => {setModalState(true)}
   // const closeModal = () => {setModalState(false)}
@@ -72,7 +75,6 @@ export default function ToDoPage({}: Props) {
     if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) !== true) {
       return;
     }
-    console.log("Початок");
     const url = new URL(
       "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
     );
@@ -82,7 +84,6 @@ export default function ToDoPage({}: Props) {
       throw new Error("User ID не знайдено");
     }
 
-    console.log("До запиту");
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -90,10 +91,44 @@ export default function ToDoPage({}: Props) {
       },
       body: JSON.stringify({userId, taskId}),
     });
-    console.log("Після запиту");
     if (!res.ok) {
       const errData = await res.json();
       throw new Error(errData.error || "Не вдалося видалити завдання");
+    } else {
+      fetchTasks();
+    }
+  };
+
+  const handleTaskDone = async (taskId: string) => {
+    const userId = localStorage.getItem("accessToken");
+    if (!userId) {
+      throw new Error("User ID не знайдено");
+    }
+
+    try {
+      const res = await fetch(
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/updateTask",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            taskId,
+            completed: true,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Не вдалося оновити завдання");
+      }
+      fetchTasks();
+    } catch (err: any) {
+      console.error("Помилка оновлення таски:", err.message || err);
+      alert("Не вдалося відмітити завдання як виконане");
     }
   };
 
@@ -102,7 +137,12 @@ export default function ToDoPage({}: Props) {
       <Header title="Список завдань" />
       <main className="pageWrapper">
         <div className="filters-bar">
-          <button onClick={() => {}} className="filter-btn">
+          <button
+            onClick={() => {
+              setStatusFilter((prev) => !prev);
+            }}
+            className="filter-btn"
+          >
             Статус
           </button>
           <button onClick={() => {}} className="filter-btn">
@@ -124,7 +164,7 @@ export default function ToDoPage({}: Props) {
                     className={`control-btn done-query ${
                       task.completed ? "done" : "undone"
                     }`}
-                    // onDoubleClick={handleTaskDone}
+                    onDoubleClick={() => handleTaskDone(task.taskId)}
                   >
                     {task.completed ? (
                       <DoneAllOutlinedIcon className="icon" />
