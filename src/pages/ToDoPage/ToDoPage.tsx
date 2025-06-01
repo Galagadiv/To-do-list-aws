@@ -35,7 +35,7 @@ export default function ToDoPage({}: Props) {
         }
 
         const url = new URL(
-          "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTask"
+          "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTasks"
         );
         url.searchParams.append("userId", userId);
 
