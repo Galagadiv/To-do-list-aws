@@ -143,11 +143,11 @@ export default function ToDoPage({}: Props) {
                   <button className="control-btn edit">
                     <EditOutlinedIcon className="icon edit" />
                   </button>
-                  <button className="control-btn del">
-                    <DeleteOutlinedIcon
-                      className="icon del"
-                      onClick={() => handleDelete(task.title, task.taskId)}
-                    />
+                  <button
+                    className="control-btn del"
+                    onClick={() => handleDelete(task.title, task.taskId)}
+                  >
+                    <DeleteOutlinedIcon className="icon del" />
                   </button>
                 </div>
               </li>
