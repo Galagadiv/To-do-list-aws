@@ -72,7 +72,7 @@ export default function ToDoPage({}: Props) {
     if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) !== true) {
       return;
     }
-
+    console.log("Початок");
     const url = new URL(
       "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
     );
@@ -82,6 +82,7 @@ export default function ToDoPage({}: Props) {
       throw new Error("User ID не знайдено");
     }
 
+    console.log("До запиту");
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -89,7 +90,7 @@ export default function ToDoPage({}: Props) {
       },
       body: JSON.stringify({userId, taskId}),
     });
-
+    console.log("Після запиту");
     if (!res.ok) {
       const errData = await res.json();
       throw new Error(errData.error || "Не вдалося видалити завдання");
