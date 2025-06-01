@@ -69,30 +69,30 @@ export default function ToDoPage({}: Props) {
   // const closeModal = () => {setModalState(false)}
 
   const handleDelete = async (taskTitle: string, taskId: string) => {
-    if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) === true) {
-      const url = new URL(
-        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
-      );
+    if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) !== true) {
+      return;
+    }
 
-      const userId = localStorage.getItem("accessToken");
-      if (!userId) {
-        throw new Error("User ID не знайдено");
-      }
+    const url = new URL(
+      "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
+    );
 
-      url.searchParams.append("userId", userId);
-      url.searchParams.append("taskId", taskId);
+    const userId = localStorage.getItem("accessToken");
+    if (!userId) {
+      throw new Error("User ID не знайдено");
+    }
 
-      const res = await fetch(url.toString(), {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({userId, taskId}),
+    });
 
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Не вдалося видалити завдання");
-      }
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || "Не вдалося видалити завдання");
     }
   };
 
