@@ -9,7 +9,7 @@ export default function Header({title}: Props) {
   return (
     <header>
       <Link to="/task-list" className="links">
-        На головну
+        Додому
       </Link>
       <h1 className="pageTitle">{title}</h1>
       <a

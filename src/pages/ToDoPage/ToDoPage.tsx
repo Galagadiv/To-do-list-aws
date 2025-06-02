@@ -14,6 +14,9 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import ReplayIcon from "@mui/icons-material/Replay";
 import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 type Props = {};
 
@@ -26,11 +29,30 @@ type Task = {
   title: string;
 };
 
+const modalStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "auto",
+  minWidth: 300,
+  maxWidth: 500,
+  bgcolor: "#3a3a3a",
+  border: "1px solid #555",
+  borderRadius: "8px",
+  boxShadow: 24,
+  p: {xs: 2, sm: 3, md: 4},
+  color: "rgba(255, 255, 255, 0.87)",
+};
+
 export default function ToDoPage({}: Props) {
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+
   const [alert, setAlert] = useState<JSX.Element | null>(null);
   const [statusFilter, setStatusFilter] = useState<boolean | null>(false);
 
@@ -92,13 +114,24 @@ export default function ToDoPage({}: Props) {
     }
   };
 
-  const handleDelete = async (taskTitle: string, taskId: string) => {
-    if (!confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}?`)) return;
+  const handleOpenDeleteModal = (task: Task) => {
+    setTaskToDelete(task);
+    setOpenDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+    setTaskToDelete(null);
+  };
+
+  const confirmDeleteTask = async () => {
+    if (!taskToDelete) return;
 
     try {
       const userId = localStorage.getItem("accessToken");
       if (!userId) {
         setAlert(<Alert severity="error">User ID не знайдено</Alert>);
+        handleCloseDeleteModal();
         return;
       }
 
@@ -109,7 +142,7 @@ export default function ToDoPage({}: Props) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({userId, taskId}),
+          body: JSON.stringify({userId, taskId: taskToDelete.taskId}),
         }
       );
 
@@ -126,6 +159,8 @@ export default function ToDoPage({}: Props) {
           Помилка при видаленні завдання: {err.message || err}
         </Alert>
       );
+    } finally {
+      handleCloseDeleteModal();
     }
   };
 
@@ -275,7 +310,7 @@ export default function ToDoPage({}: Props) {
                   </button>
                   <button
                     className="control-btn del"
-                    onClick={() => handleDelete(task.title, task.taskId)}
+                    onClick={() => handleOpenDeleteModal(task)}
                   >
                     <DeleteOutlinedIcon className="icon del" />
                   </button>
@@ -295,6 +330,49 @@ export default function ToDoPage({}: Props) {
           </Link>
         </div>
       </main>
+      <Modal
+        open={openDeleteModal}
+        onClose={handleCloseDeleteModal}
+        aria-labelledby="delete-modal-title"
+        aria-describedby="delete-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography
+            id="delete-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{mb: 2, fontWeight: "bold"}}
+          >
+            Підтвердження видалення
+          </Typography>
+          <Typography id="delete-modal-description" sx={{mb: 3}}>
+            Ви точно хочете видалити завдання:{" "}
+            <strong style={{color: "#64cff"}}>{taskToDelete?.title}</strong>?
+          </Typography>
+          <Box sx={{display: "flex", justifyContent: "flex-end", gap: "10px"}}>
+            <Button
+              onClick={handleCloseDeleteModal}
+              variant="outlined"
+              sx={{
+                color: "rgba(255, 255, 255, 0.87)",
+                borderColor: "rgba(255, 255, 255, 0.5)",
+                "&:hover": {
+                  borderColor: "rgba(255, 255, 255, 0.87)",
+                },
+              }}
+            >
+              Скасувати
+            </Button>
+            <Button
+              onClick={confirmDeleteTask}
+              variant="contained"
+              color="error"
+            >
+              Видалити
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 }
