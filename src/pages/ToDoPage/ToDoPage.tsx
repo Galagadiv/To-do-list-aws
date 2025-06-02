@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import "../../global-styles/index.css";
 import "./ToDoPage.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -21,6 +21,8 @@ type Task = {
 };
 
 export default function ToDoPage({}: Props) {
+  const navigate = useNavigate();
+
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -97,6 +99,10 @@ export default function ToDoPage({}: Props) {
     } else {
       fetchTasks();
     }
+  };
+
+  const handleEdit = (taskId: string) => {
+    navigate(`/new-task/${taskId}`);
   };
 
   const handleTaskDone = async (taskId: string) => {
@@ -180,7 +186,10 @@ export default function ToDoPage({}: Props) {
                   </div>
                 </div>
                 <div className="task-control-btn-bar">
-                  <button className="control-btn edit">
+                  <button
+                    className="control-btn edit"
+                    onClick={() => handleEdit(task.taskId)}
+                  >
                     <EditOutlinedIcon className="icon edit" />
                   </button>
                   <button

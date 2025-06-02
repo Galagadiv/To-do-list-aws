@@ -3,10 +3,7 @@ import "../../global-styles/index.css";
 import "./ManageTaskPage.css";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import Header from "../../components/Header/Header";
-
-type Props = {
-  taskId?: string;
-};
+import {useParams, type Params} from "react-router";
 
 type Task = {
   userId: string;
@@ -17,11 +14,12 @@ type Task = {
   title: string;
 };
 
-export default function ManageTaskPage({taskId}: Props) {
+export default function ManageTaskPage() {
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [taskDescr, setTaskDescr] = useState<string>("");
   const [taskData, setTaskData] = useState<Task | null>(null);
 
+  const {taskId} = useParams<Params>();
   useEffect(() => {
     if (!taskId) return;
 
