@@ -8,8 +8,8 @@ type Props = {
 export default function Header({title}: Props) {
   return (
     <header>
-      <Link to="/login" className="links">
-        Назад
+      <Link to="/task-list" className="links">
+        На головну
       </Link>
       <h1 className="pageTitle">{title}</h1>
       <a

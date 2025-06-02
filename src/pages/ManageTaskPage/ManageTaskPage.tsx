@@ -179,7 +179,7 @@ export default function ManageTaskPage() {
       }
 
       setAlert(<Alert severity="success">Завдання створено успішно!</Alert>);
-      setTimeout(() => navigate("/task-list"), 1000); // перенаправити через 1 секунду
+      setTimeout(() => navigate("/task-list"), 1000);
     } catch (err: any) {
       setAlert(
         <Alert severity="error">Виникла помилка при збереженні завдання.</Alert>
