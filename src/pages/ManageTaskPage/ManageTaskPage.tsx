@@ -164,7 +164,7 @@ export default function ManageTaskPage() {
   return (
     <>
       <Header title={taskId ? "Редагувати завдання" : "Нове завдання"} />
-      <main className="pageWrapper">
+      <main className="pageWrapper" style={{height: "100%"}}>
         {/* Якщо ми зараз чекаємо на fetchTask, показуємо короткий “Завантаження…” */}
         {isLoading ? (
           <div className="loading">Завантаження даних завдання…</div>
