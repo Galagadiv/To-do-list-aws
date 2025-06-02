@@ -1,54 +1,85 @@
-# React + TypeScript + Vite
+# 📝 To-Do List — Serverless Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Це повнофункціональний вебзастосунок для управління особистими завданнями. Проєкт побудований з використанням стеку **React + TypeScript + AWS** та реалізує сучасну архітектуру **Serverless**.
 
-Currently, two official plugins are available:
+## 🔗 Демо
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🌐 [Відкрити застосунок](https://us-east-1atoghhejc.auth.us-east-1.amazoncognito.com/login?client_id=16jtunov7n5jlg34414vi7p84u&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fubu9jz8e3f.execute-api.us-east-1.amazonaws.com%2Fdev%2Fcallback)
 
-## Expanding the ESLint configuration
+## 📦 Технології
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **React + TypeScript**
+- **React Router** — маршрутизація між сторінками
+- **MUI (Material UI)** — стильова система та компоненти
+- **Fetch API** — запити до бекенду через API Gateway
+- **LocalStorage** — зберігання access токена
+
+### Backend (Serverless на AWS)
+
+- **AWS Lambda** — обробка запитів
+- **AWS API Gateway** — HTTP API-інтерфейс
+- **AWS DynamoDB** — зберігання завдань
+- **AWS Cognito** — автентифікація користувачів
+- **AWS Amplify** — хостинг фронтенду
+
+## 🔐 Авторизація
+
+- Реєстрація та логін через AWS Cognito
+- Після логіну sub частина accessToken зберігається у `localStorage`
+- Токен передається до Lambda-функцій через заголовки
+
+## 📋 Функціонал
+
+- 📌 **Список завдань** — перегляд, фільтрація за статусом
+- ➕ **Додавання завдань** — через форму
+- ✏️ **Редагування завдань** — за унікальним ID
+- ✅ **Позначення як виконане** - через подвійний клік
+- ❌ **Видалення завдання** - через модалку
+
+## 📂 Структура
+
+```
+public/
+  404.html
+  vite.svg
+node_modules
+src/
+  assets/
+    react.svg
+  components/
+    Header/
+      Header.tsx
+  global-styles/
+    index.css
+    reset.css
+  pages/
+    App/
+      App.css
+      App.tsx
+    ManageTaskPage/
+      ManageTaskPage.css
+      ManageTaskPage.tsx
+    ToDoPage/
+      ToDoPage.css
+      ToDoPage.tsx
+  main.tsx
+  vite-env.d.ts
+  .env
+  eslint.config.js
+  index.html
+  package-lock.json
+  package.json
+  tsconfig.app.json
+  tsconfig.json
+  tsconfig.node.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Деплой
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- Фронтенд: деплой через AWS Amplify. Достатньо закомітити dev гілку, а далі вона автоматично зблідиться та задеплоїться на сайт.
+- Бекенд: деплой через `serverless framework`:
+  ```bash
+  npx serverless deploy
+  ```
