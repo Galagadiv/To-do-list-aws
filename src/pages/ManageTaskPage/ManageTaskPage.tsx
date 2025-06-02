@@ -169,7 +169,7 @@ export default function ManageTaskPage() {
         {isLoading ? (
           <div className="loading">Завантаження даних завдання…</div>
         ) : (
-          <form className="form-crete-task" onSubmit={handleSubmit}>
+          <form className="form-create-task" onSubmit={handleSubmit}>
             <div className="title-create-box">
               <div className="sectionTitle">
                 <h2>Назва:</h2>
