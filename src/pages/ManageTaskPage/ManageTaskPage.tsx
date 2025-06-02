@@ -1,9 +1,12 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, type JSX} from "react";
 import "../../global-styles/index.css";
 import "./ManageTaskPage.css";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import Header from "../../components/Header/Header";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 type Task = {
   userId: string;
@@ -15,19 +18,20 @@ type Task = {
 };
 
 export default function ManageTaskPage() {
+  const navigate = useNavigate();
+  const [alert, setAlert] = useState<JSX.Element | null>(null);
+
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [taskDescr, setTaskDescr] = useState<string>("");
   const [taskData, setTaskData] = useState<Task | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Явно типізуємо useParams
   const {taskId} = useParams<{taskId: string}>();
 
   useEffect(() => {
     if (!taskId) return;
 
     setIsLoading(true);
-    console.log("____ fetchTask, taskId:", taskId);
 
     const fetchTask = async () => {
       try {
@@ -56,14 +60,14 @@ export default function ManageTaskPage() {
         }
         const json = await res.json();
         const data: Task = Array.isArray(json) ? json[0] : json;
-        console.log("____ Отримані дані завдання:", data);
 
         setTaskData(data);
         setTaskTitle(data.title);
         setTaskDescr(data.description || "");
       } catch (er: any) {
-        console.error("____ Помилка fetchTask:", er.message || er);
-        alert("Не вдалося завантажити завдання");
+        setAlert(
+          <Alert severity="error">Не вдалося завантажити завдання</Alert>
+        );
       } finally {
         setIsLoading(false);
       }
@@ -74,7 +78,9 @@ export default function ManageTaskPage() {
 
   const updateTask = async () => {
     if (!taskData) {
-      alert("Немає даних завдання для оновлення");
+      setAlert(
+        <Alert severity="error">Немає даних завдання для оновлення</Alert>
+      );
       return;
     }
 
@@ -102,25 +108,41 @@ export default function ManageTaskPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Не вдалося оновити завдання");
+        setAlert(
+          <Alert severity="error">
+            Не вдалося оновити завдання.
+            <br />
+            {err.error}
+          </Alert>
+        );
+        return;
       }
 
-      alert("Завдання оновлено успішно!");
+      setAlert(<Alert severity="success">Завдання оновлено успішно!</Alert>);
+      setTimeout(() => navigate("/task-list"), 1000);
     } catch (err: any) {
-      console.error("Fetch error:", err.message || err);
-      alert("Виникла помилка при збереженні завдання.");
+      setAlert(
+        <Alert severity="error">
+          Не вдалося оновити завдання.
+          <br />
+          {err.error}
+        </Alert>
+      );
     }
   };
 
   const createTask = async () => {
     if (!taskTitle.trim()) {
-      alert("Будь ласка, заповніть заголовок");
+      setAlert(
+        <Alert severity="warning">Будь ласка, заповніть заголовок</Alert>
+      );
       return;
     }
 
     const userId = localStorage.getItem("accessToken");
     if (!userId) {
-      throw new Error("User ID не знайдено");
+      setAlert(<Alert severity="error">Користувач не знайдений</Alert>);
+      return;
     }
 
     const payload: Record<string, any> = {
@@ -146,13 +168,22 @@ export default function ManageTaskPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Не вдалося створити завдання");
+        setAlert(
+          <Alert severity="error">
+            Не вдалося створити завдання.
+            <br />
+            {err.error}
+          </Alert>
+        );
+        return;
       }
 
-      alert("Завдання створено успішно!");
+      setAlert(<Alert severity="success">Завдання створено успішно!</Alert>);
+      setTimeout(() => navigate("/task-list"), 1000); // перенаправити через 1 секунду
     } catch (err: any) {
-      console.error("Fetch error:", err.message || err);
-      alert("Виникла помилка при збереженні завдання.");
+      setAlert(
+        <Alert severity="error">Виникла помилка при збереженні завдання.</Alert>
+      );
     }
   };
 
@@ -164,10 +195,15 @@ export default function ManageTaskPage() {
   return (
     <>
       <Header title={taskId ? "Редагувати завдання" : "Нове завдання"} />
+      {alert && (
+        <div style={{margin: "10px auto", width: "fit-content"}}>{alert}</div>
+      )}
       <main className="pageWrapper" style={{height: "100%"}}>
-        {/* Якщо ми зараз чекаємо на fetchTask, показуємо короткий “Завантаження…” */}
         {isLoading ? (
-          <div className="loading">Завантаження даних завдання…</div>
+          <div style={{display: "flex", flexDirection: "column"}}>
+            <CircularProgress size="30px" sx={{mx: "auto", color: "#646cff"}} />
+            <h2 style={{margin: "0 auto"}}>Триває завантаження</h2>
+          </div>
         ) : (
           <form className="form-create-task" onSubmit={handleSubmit}>
             <div className="title-create-box">

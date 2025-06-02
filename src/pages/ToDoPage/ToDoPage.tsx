@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, type JSX} from "react";
 import "../../global-styles/index.css";
 import "./ToDoPage.css";
 import {Link, useNavigate} from "react-router-dom";
@@ -9,8 +9,10 @@ import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import Header from "../../components/Header/Header";
 
+import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import ReplayIcon from "@mui/icons-material/Replay";
 import CircularProgress from "@mui/material/CircularProgress";
 
 type Props = {};
@@ -28,18 +30,28 @@ export default function ToDoPage({}: Props) {
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Task[]>([]);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [modalState, setModalState] = useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState<JSX.Element | null>(null);
   const [statusFilter, setStatusFilter] = useState<boolean | null>(false);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [statusFilter]);
+
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => setAlert(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
 
   const fetchTasks = async () => {
     setIsLoading(true);
     try {
       const userId = localStorage.getItem("accessToken");
       if (!userId) {
-        throw new Error("User ID не знайдено");
+        setAlert(<Alert severity="error">User ID не знайдено</Alert>);
+        return;
       }
 
       const url = new URL(
@@ -59,51 +71,61 @@ export default function ToDoPage({}: Props) {
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || "Не вдалося отримати завдання");
+        setAlert(
+          <Alert severity="error">
+            Не вдалося отримати завдання: {errData.error}
+          </Alert>
+        );
+        return;
       }
 
       const data: Task[] = await res.json();
       setTasks(data);
     } catch (err: any) {
-      console.error("Fetch error:", err.message || err);
-      alert("Виникла помилка при отриманні завдань: " + (err.message || err));
+      setAlert(
+        <Alert severity="error">
+          Виникла помилка при отриманні завдань: {err.message || err}
+        </Alert>
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, [statusFilter]);
-
-  // const openModal = () => {setModalState(true)}
-  // const closeModal = () => {setModalState(false)}
-
   const handleDelete = async (taskTitle: string, taskId: string) => {
-    if (confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}`) !== true) {
-      return;
-    }
-    const url = new URL(
-      "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask"
-    );
+    if (!confirm(`Ви дійсно хочете видалити завдання: ${taskTitle}?`)) return;
 
-    const userId = localStorage.getItem("accessToken");
-    if (!userId) {
-      throw new Error("User ID не знайдено");
-    }
+    try {
+      const userId = localStorage.getItem("accessToken");
+      if (!userId) {
+        setAlert(<Alert severity="error">User ID не знайдено</Alert>);
+        return;
+      }
 
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({userId, taskId}),
-    });
-    if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.error || "Не вдалося видалити завдання");
-    } else {
+      const res = await fetch(
+        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/deleteTask",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({userId, taskId}),
+        }
+      );
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Не вдалося видалити завдання");
+      }
+
+      setAlert(<Alert severity="success">Завдання видалено успішно</Alert>);
       fetchTasks();
+    } catch (err: any) {
+      setAlert(
+        <Alert severity="error">
+          Помилка при видаленні завдання: {err.message || err}
+        </Alert>
+      );
     }
   };
 
@@ -112,12 +134,13 @@ export default function ToDoPage({}: Props) {
   };
 
   const handleTaskDone = async (taskId: string) => {
-    const userId = localStorage.getItem("accessToken");
-    if (!userId) {
-      throw new Error("User ID не знайдено");
-    }
-
     try {
+      const userId = localStorage.getItem("accessToken");
+      if (!userId) {
+        setAlert(<Alert severity="error">User ID не знайдено</Alert>);
+        return;
+      }
+
       const res = await fetch(
         "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/updateTask",
         {
@@ -135,18 +158,33 @@ export default function ToDoPage({}: Props) {
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || "Не вдалося оновити завдання");
+        setAlert(
+          <Alert severity="error">
+            Не вдалося оновити завдання: {errData.error}
+          </Alert>
+        );
+        return;
       }
+
+      setAlert(
+        <Alert severity="success">Завдання позначено як виконане</Alert>
+      );
       fetchTasks();
     } catch (err: any) {
-      console.error("Помилка оновлення таски:", err.message || err);
-      alert("Не вдалося відмітити завдання як виконане");
+      setAlert(
+        <Alert severity="error">
+          Не вдалося оновити завдання: {err.message || err}
+        </Alert>
+      );
     }
   };
 
   return (
     <>
       <Header title="Список завдань" />
+      {alert && (
+        <div style={{margin: "10px auto", width: "fit-content"}}>{alert}</div>
+      )}
       <main className="pageWrapper">
         <ButtonGroup
           variant="contained"
@@ -184,7 +222,7 @@ export default function ToDoPage({}: Props) {
             <CircularProgress size="30px" sx={{mx: "auto", color: "#646cff"}} />
             <h2 style={{margin: "0 auto"}}>Триває завантаження</h2>
           </div>
-        ) : tasks && tasks.length > 0 ? (
+        ) : tasks.length > 0 ? (
           <ul className="task-list">
             {tasks.map((task) => (
               <li className="task" key={task.taskId}>
@@ -226,11 +264,13 @@ export default function ToDoPage({}: Props) {
             ))}
           </ul>
         ) : (
-          <h2>На жаль, у вас немає завдань</h2>
+          <Button onClick={fetchTasks}>
+            <ReplayIcon /> Перезавантажити завдання
+          </Button>
         )}
 
         <div>
-          <Link to="/new-task" className="addButton">
+          <Link to="/new-task/" className="addButton">
             <AddIcon className="icon" />
           </Link>
         </div>
