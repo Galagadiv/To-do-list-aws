@@ -54,8 +54,8 @@ export default function ManageTaskPage() {
           const errData = await res.json();
           throw new Error(errData.error || "Не вдалося отримати завдання");
         }
-
-        const data: Task = await res.json();
+        const json = await res.json();
+        const data: Task = Array.isArray(json) ? json[0] : json;
         console.log("____ Отримані дані завдання:", data);
 
         setTaskData(data);
