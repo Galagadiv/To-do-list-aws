@@ -22,6 +22,7 @@ export default function ManageTaskPage() {
   const {taskId} = useParams<Params>();
   useEffect(() => {
     if (!taskId) return;
+    console.log("Start");
 
     const fetchTask = async () => {
       const url = new URL(
@@ -55,7 +56,7 @@ export default function ManageTaskPage() {
     };
 
     fetchTask();
-  });
+  }, [taskId]);
 
   const updateTask = async () => {
     if (!taskData) {
