@@ -346,7 +346,7 @@ export default function ToDoPage({}: Props) {
             Підтвердження видалення
           </Typography>
           <Typography id="delete-modal-description" sx={{mb: 3}}>
-            Ви точно хочете видалити завдання:{" "}
+            Ви точно хочете видалити завдання:
             <strong style={{color: "#64cff"}}>{taskToDelete?.title}</strong>?
           </Typography>
           <Box sx={{display: "flex", justifyContent: "flex-end", gap: "10px"}}>
