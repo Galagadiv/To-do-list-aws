@@ -32,7 +32,6 @@ export default function ManageTaskPage() {
     if (!taskId) return;
 
     setIsLoading(true);
-
     const fetchTask = async () => {
       try {
         const url = new URL(
