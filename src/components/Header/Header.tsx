@@ -14,7 +14,7 @@ export default function Header({title}: Props) {
       <h1 className="pageTitle">{title}</h1>
       <a
         rel="noopener noreferrer"
-        href={`${process.env.REACT_APP_API_BASE_URL}/logout`}
+        href={`https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/logout`}
         className="links"
       >
         Вийти
