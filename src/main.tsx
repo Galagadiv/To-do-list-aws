@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="*" element={<App />} />
         <Route path="/task-list" element={<ToDoPage />} />
-        <Route path="/new-task" element={<ManageTaskPage />} />
+        <Route path="/new-task/:taskId" element={<ManageTaskPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
