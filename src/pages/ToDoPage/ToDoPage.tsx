@@ -218,9 +218,29 @@ export default function ToDoPage({}: Props) {
         </ButtonGroup>
 
         {isLoading ? (
-          <div style={{display: "flex", flexDirection: "column"}}>
-            <CircularProgress size="30px" sx={{mx: "auto", color: "#646cff"}} />
-            <h2 style={{margin: "0 auto"}}>Триває завантаження</h2>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              color: "#fff",
+            }}
+          >
+            <CircularProgress
+              size={30}
+              sx={{
+                mx: "auto",
+                "& svg": {
+                  width: "30px !important",
+                  height: "30px !important",
+                },
+                "& circle": {
+                  stroke: "#646cff",
+                },
+              }}
+            />
+            <h2 style={{margin: "0 auto", color: "#fff"}}>
+              Триває завантаження
+            </h2>
           </div>
         ) : tasks.length > 0 ? (
           <ul className="task-list">

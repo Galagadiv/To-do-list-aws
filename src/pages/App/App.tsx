@@ -6,18 +6,14 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Перевіряємо, чи є токен у hash-фрагменті URL
     const hash = window.location.hash;
     if (hash.includes("sub")) {
       const params = new URLSearchParams(hash.substring(1));
       const token = params.get("sub");
       if (token) {
-        // Зберігаємо токен у localStorage
         localStorage.setItem("accessToken", token);
-        // Видаляємо hash-фрагмент і переходимо на /task-list
         navigate("/task-list", {replace: true});
       } else {
-        // navigate("/task-list", {replace: true});
         console.log("error");
       }
     }
