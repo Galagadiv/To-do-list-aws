@@ -9,6 +9,10 @@ import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import Header from "../../components/Header/Header";
 
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import CircularProgress from "@mui/material/CircularProgress";
+
 type Props = {};
 
 type Task = {
@@ -28,7 +32,7 @@ export default function ToDoPage({}: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [modalState, setModalState] = useState<boolean>(false);
 
-  const [statusFilter, setStatusFilter] = useState<boolean>(false);
+  const [statusFilter, setStatusFilter] = useState<boolean | null>(false);
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -42,7 +46,9 @@ export default function ToDoPage({}: Props) {
         "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTasks"
       );
       url.searchParams.append("userId", userId);
-      url.searchParams.append("completed", statusFilter.toString());
+      if (statusFilter) {
+        url.searchParams.append("completed", statusFilter.toString());
+      }
 
       const res = await fetch(url.toString(), {
         method: "GET",
@@ -142,25 +148,42 @@ export default function ToDoPage({}: Props) {
     <>
       <Header title="Список завдань" />
       <main className="pageWrapper">
-        <div className="filters-bar">
-          <button
+        <ButtonGroup
+          variant="contained"
+          className="filters-bar"
+          aria-label="Status filter button group"
+        >
+          <Button
             onClick={() => {
-              setStatusFilter((prev) => !prev);
+              setStatusFilter(null);
             }}
             className="filter-btn"
           >
-            Статус
-          </button>
-          <button onClick={() => {}} className="filter-btn">
-            Фільтр 2
-          </button>
-          <button onClick={() => {}} className="filter-btn">
-            Фільтр 3
-          </button>
-        </div>
+            Всі
+          </Button>
+          <Button
+            onClick={() => {
+              setStatusFilter(false);
+            }}
+            className="filter-btn"
+          >
+            Активні
+          </Button>
+          <Button
+            onClick={() => {
+              setStatusFilter(true);
+            }}
+            className="filter-btn"
+          >
+            Завершені
+          </Button>
+        </ButtonGroup>
 
         {isLoading ? (
-          <h2>Триває завантаження</h2>
+          <div style={{display: "flex", flexDirection: "column"}}>
+            <CircularProgress size="30px" sx={{mx: "auto", color: "#646cff"}} />
+            <h2 style={{margin: "0 auto"}}>Триває завантаження</h2>
+          </div>
         ) : tasks && tasks.length > 0 ? (
           <ul className="task-list">
             {tasks.map((task) => (
