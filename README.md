@@ -6,6 +6,8 @@
 
 🌐 [Відкрити застосунок](https://us-east-1atoghhejc.auth.us-east-1.amazoncognito.com/login?client_id=16jtunov7n5jlg34414vi7p84u&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fubu9jz8e3f.execute-api.us-east-1.amazonaws.com%2Fdev%2Fcallback)
 
+[Бекенд репозиторій](https://github.com/Galagadiv/To-do-list-aws-backend)
+
 ## 📦 Технології
 
 ### Frontend
