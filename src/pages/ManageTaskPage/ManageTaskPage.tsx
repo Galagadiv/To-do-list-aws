@@ -3,7 +3,7 @@ import "../../global-styles/index.css";
 import "./ManageTaskPage.css";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import Header from "../../components/Header/Header";
-import {useParams, type Params} from "react-router";
+import {useParams} from "react-router-dom";
 
 type Task = {
   userId: string;
@@ -18,41 +18,55 @@ export default function ManageTaskPage() {
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [taskDescr, setTaskDescr] = useState<string>("");
   const [taskData, setTaskData] = useState<Task | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const {taskId} = useParams<Params>();
+  // Явно типізуємо useParams
+  const {taskId} = useParams<{taskId: string}>();
+
   useEffect(() => {
     if (!taskId) return;
-    console.log("Start");
+
+    setIsLoading(true);
+    console.log("____ fetchTask, taskId:", taskId);
 
     const fetchTask = async () => {
-      const url = new URL(
-        "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTaskByID"
-      );
+      try {
+        const url = new URL(
+          "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTaskByID"
+        );
 
-      const userId = localStorage.getItem("accessToken");
-      if (!userId) {
-        throw new Error("User ID не знайдено");
+        const userId = localStorage.getItem("accessToken");
+        if (!userId) {
+          throw new Error("User ID не знайдено");
+        }
+
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("taskId", taskId);
+
+        const res = await fetch(url.toString(), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || "Не вдалося отримати завдання");
+        }
+
+        const data: Task = await res.json();
+        console.log("____ Отримані дані завдання:", data);
+
+        setTaskData(data);
+        setTaskTitle(data.title);
+        setTaskDescr(data.description || "");
+      } catch (er: any) {
+        console.error("____ Помилка fetchTask:", er.message || er);
+        alert("Не вдалося завантажити завдання");
+      } finally {
+        setIsLoading(false);
       }
-      url.searchParams.append("userId", userId);
-
-      url.searchParams.append("taskId", taskId);
-
-      const res = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Не вдалося отримати завдання");
-      }
-      const data: Task = await res.json();
-      setTaskData(data);
-
-      setTaskTitle(data.title);
-      setTaskDescr(data.description || "");
     };
 
     fetchTask();
@@ -144,42 +158,46 @@ export default function ManageTaskPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     taskId ? await updateTask() : await createTask();
   };
 
   return (
     <>
-      <Header title="Нове завдання" />
+      <Header title={taskId ? "Редагувати завдання" : "Нове завдання"} />
       <main className="pageWrapper">
-        <form className="form-crete-task" onSubmit={handleSubmit}>
-          <div className="title-create-box">
-            <div className="sectionTitle">
-              <h2>Назва:</h2>
+        {/* Якщо ми зараз чекаємо на fetchTask, показуємо короткий “Завантаження…” */}
+        {isLoading ? (
+          <div className="loading">Завантаження даних завдання…</div>
+        ) : (
+          <form className="form-crete-task" onSubmit={handleSubmit}>
+            <div className="title-create-box">
+              <div className="sectionTitle">
+                <h2>Назва:</h2>
+              </div>
+              <input
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+                placeholder="Введіть заголовок..."
+                className="input-title"
+                required
+              />
+              <button className={`control-btn done-query`} type="submit">
+                <DoneOutlinedIcon className="icon" />
+              </button>
             </div>
-            <input
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-              placeholder="Введіть заголовок..."
-              className="input-title"
-              required
-            />
-            <button className={`control-btn done-query`} type="submit">
-              <DoneOutlinedIcon className="icon" />
-            </button>
-          </div>
-          <div className="decription-create-box">
-            <div className="sectionTitle">
-              <h2>Опис:</h2>
+            <div className="decription-create-box">
+              <div className="sectionTitle">
+                <h2>Опис:</h2>
+              </div>
+              <textarea
+                value={taskDescr}
+                onChange={(e) => setTaskDescr(e.target.value)}
+                placeholder="Введіть опис..."
+                className="textarea-decription"
+              />
             </div>
-            <textarea
-              value={taskDescr}
-              onChange={(e) => setTaskDescr(e.target.value)}
-              placeholder="Введіть опис..."
-              className="textarea-decription"
-            />
-          </div>
-        </form>
+          </form>
+        )}
       </main>
     </>
   );
