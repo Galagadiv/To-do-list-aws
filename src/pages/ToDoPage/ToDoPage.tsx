@@ -46,7 +46,7 @@ export default function ToDoPage({}: Props) {
         "https://ubu9jz8e3f.execute-api.us-east-1.amazonaws.com/dev/getUserTasks"
       );
       url.searchParams.append("userId", userId);
-      if (statusFilter) {
+      if (typeof statusFilter === "boolean") {
         url.searchParams.append("completed", statusFilter.toString());
       }
 
@@ -154,26 +154,26 @@ export default function ToDoPage({}: Props) {
           aria-label="Status filter button group"
         >
           <Button
-            onClick={() => {
-              setStatusFilter(null);
-            }}
-            className="filter-btn"
+            onClick={() => setStatusFilter(null)}
+            className={`filter-btn ${
+              statusFilter === null ? "active-filter-btn" : ""
+            }`}
           >
             Всі
           </Button>
           <Button
-            onClick={() => {
-              setStatusFilter(false);
-            }}
-            className="filter-btn"
+            onClick={() => setStatusFilter(false)}
+            className={`filter-btn ${
+              statusFilter === false ? "active-filter-btn" : ""
+            }`}
           >
             Активні
           </Button>
           <Button
-            onClick={() => {
-              setStatusFilter(true);
-            }}
-            className="filter-btn"
+            onClick={() => setStatusFilter(true)}
+            className={`filter-btn ${
+              statusFilter === true ? "active-filter-btn" : ""
+            }`}
           >
             Завершені
           </Button>
