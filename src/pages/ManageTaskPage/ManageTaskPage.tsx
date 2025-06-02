@@ -20,7 +20,7 @@ type Task = {
 export default function ManageTaskPage({taskId}: Props) {
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [taskDescr, setTaskDescr] = useState<string>("");
-  const [_, setTaskData] = useState<Task>();
+  const [taskData, setTaskData] = useState<Task | null>(null);
 
   useEffect(() => {
     if (!taskId) return;
@@ -60,10 +60,16 @@ export default function ManageTaskPage({taskId}: Props) {
   });
 
   const updateTask = async () => {
+    if (!taskData) {
+      alert("Немає даних завдання для оновлення");
+      return;
+    }
+
     const payload: Record<string, any> = {
-      userId: localStorage.getItem("accessToken"),
+      userId: taskData.userId,
+      taskId: taskData.taskId,
       title: taskTitle.trim(),
-      completed: false,
+      completed: taskData.completed,
     };
     if (taskDescr.trim()) {
       payload.description = taskDescr.trim();
@@ -83,10 +89,10 @@ export default function ManageTaskPage({taskId}: Props) {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Не вдалося створити завдання");
+        throw new Error(err.error || "Не вдалося оновити завдання");
       }
 
-      alert("Завдання створено успішно!");
+      alert("Завдання оновлено успішно!");
     } catch (err: any) {
       console.error("Fetch error:", err.message || err);
       alert("Виникла помилка при збереженні завдання.");
@@ -99,8 +105,13 @@ export default function ManageTaskPage({taskId}: Props) {
       return;
     }
 
+    const userId = localStorage.getItem("accessToken");
+    if (!userId) {
+      throw new Error("User ID не знайдено");
+    }
+
     const payload: Record<string, any> = {
-      userId: localStorage.getItem("accessToken"),
+      userId,
       title: taskTitle.trim(),
       completed: false,
     };
@@ -135,14 +146,7 @@ export default function ManageTaskPage({taskId}: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      alert("Access token not found");
-      return;
-    }
-
-    taskId ? updateTask() : createTask();
+    taskId ? await updateTask() : await createTask();
   };
 
   return (
