@@ -61,6 +61,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: initial;
 }
 
 .task-status {
@@ -132,7 +133,10 @@
   border-color: #f83939;
   outline: none;
 }
-
+.control-btn.done-query {
+  width: 50px !important;
+  height: 50px !important;
+}
 .control-btn.done-query .icon {
   font-size: 1.5em;
   padding: 0;
@@ -180,20 +184,22 @@
     padding: 8px 6px;
   }
 
+  .control-btn.edit,
+  .control-btn.del,
+  .control-btn.done {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
   .task-number {
     font-size: 40px;
   }
 
   .task-title {
     font-size: 20px;
-    max-width: calc(100% - 20px);
   }
 
   .task-status {
     font-size: 14px;
-  }
-
-  .task-control-btn-bar {
-    align-self: flex-end;
   }
 }
