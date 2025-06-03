@@ -230,21 +230,24 @@ export default function ManageTaskPage() {
                 <h2>Назва:</h2>
               </div>
               <input
+                id="sad"
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
                 placeholder="Введіть заголовок..."
                 className="input-title"
                 required
               />
-              <button className={`control-btn done-query`} type="submit">
+              <button className="control-btn done-query" type="submit">
                 <DoneOutlinedIcon className="icon" />
               </button>
             </div>
+
             <div className="decription-create-box">
               <div className="sectionTitle">
                 <h2>Опис:</h2>
               </div>
               <textarea
+                id="das"
                 value={taskDescr}
                 onChange={(e) => setTaskDescr(e.target.value)}
                 placeholder="Введіть опис..."
